@@ -38,7 +38,14 @@
                 return;
             }
             data.schools.forEach(school => {
-                resultsDiv.innerHTML += `<p><strong>${school.name}</strong> - ${school.address} (Distance: ${school.distance.toFixed(2)} km)</p>`;
+                resultsDiv.innerHTML += `
+                    <p>
+                        <strong>${school.name}</strong> - ${school.address} <br>
+                        📍 <strong>Latitude:</strong> ${school.latitude}, <strong>Longitude:</strong> ${school.longitude} <br>
+                        📏 <strong>Distance:</strong> ${school.distance.toFixed(2)} km
+                    </p>
+                    <hr>
+                `;
             });
         }
     </script>
