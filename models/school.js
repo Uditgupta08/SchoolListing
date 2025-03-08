@@ -1,6 +1,7 @@
 const db = require('../config/db');
 
 const createTable = async () => {
+  console.log("Creating schools table if not exists...");
   const createTableQuery = `
     CREATE TABLE IF NOT EXISTS schools (
       id INT AUTO_INCREMENT PRIMARY KEY,
@@ -19,9 +20,11 @@ const createTable = async () => {
 };
 
 const addSchool = async ({ name, address, latitude, longitude }) => {
+  console.log("Adding new school:", name);
   try {
     const query = "INSERT INTO schools (name, address, latitude, longitude) VALUES (?, ?, ?, ?)";
     const [result] = await db.execute(query, [name, address, latitude, longitude]);
+    console.log("School added successfully with ID:", result.insertId);
     return result;
   } catch (error) {
     console.error("Error adding school:", error);
@@ -30,9 +33,11 @@ const addSchool = async ({ name, address, latitude, longitude }) => {
 };
 
 const getAllSchools = async () => {
+  console.log("Fetching all schools...");
   try {
     const query = "SELECT * FROM schools";
     const [rows] = await db.execute(query);
+    console.log("Fetched schools:", rows.length);
     return rows;
   } catch (error) {
     console.error("Error fetching schools:", error);

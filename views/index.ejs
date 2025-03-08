@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Management</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <script>
+        async function addSchool(event) {
+            event.preventDefault();
+            const name = document.getElementById("name").value;
+            const address = document.getElementById("address").value;
+            const latitude = document.getElementById("latitude").value;
+            const longitude = document.getElementById("longitude").value;
+
+            const response = await fetch('/addSchool', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, address, latitude, longitude })
+            });
+
+            const data = await response.json();
+            alert(data.message || data.error);
+        }
+
+        async function findSchools(event) {
+            event.preventDefault();
+            const userLat = document.getElementById("userLat").value;
+            const userLon = document.getElementById("userLon").value;
+
+            const response = await fetch(`/listSchools?latitude=${userLat}&longitude=${userLon}`);
+            const data = await response.json();
+
+            const resultsDiv = document.getElementById("schoolResults");
+            resultsDiv.innerHTML = "<h3>Nearby Schools:</h3>";
+            if (data.schools.length === 0) {
+                resultsDiv.innerHTML += "<p>No schools found.</p>";
+                return;
+            }
+            data.schools.forEach(school => {
+                resultsDiv.innerHTML += `<p><strong>${school.name}</strong> - ${school.address} (Distance: ${school.distance.toFixed(2)} km)</p>`;
+            });
+        }
+    </script>
+</head>
+<body>
+    <h1>School Management</h1>
+    <section>
+        <h2>Add a School</h2>
+        <form onsubmit="addSchool(event)">
+            <label>Name:</label>
+            <input type="text" id="name" required>
+            <label>Address:</label>
+            <input type="text" id="address" required>
+            <label>Latitude:</label>
+            <input type="number" step="any" id="latitude" required>
+            <label>Longitude:</label>
+            <input type="number" step="any" id="longitude" required>
+            <button type="submit">Add School</button>
+        </form>
+    </section>
+    <section>
+        <h2>Find Schools Near You</h2>
+        <form onsubmit="findSchools(event)">
+            <label>Your Latitude:</label>
+            <input type="number" step="any" id="userLat" required>
+            <label>Your Longitude:</label>
+            <input type="number" step="any" id="userLon" required>
+            <button type="submit">Find Schools</button>
+        </form>
+        <div id="schoolResults"></div>
+    </section>
+</body>
+</html>
